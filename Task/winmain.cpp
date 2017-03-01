@@ -168,4 +168,4 @@ BOOL InitInstance(HINSTANCE hinstance, int nCmdShow)
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 	return TRUE;
-}
+} 
