@@ -57,7 +57,7 @@ BOOL InitApplication(HINSTANCE hinstance)
 		return FALSE;
 	}
 	return TRUE;
-}
+} 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	static int x, y;
