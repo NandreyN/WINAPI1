@@ -1,0 +1,6 @@
+Monday GA(L) MA GA SP MA(ADD)
+Tueday MA(L) ENG DM PRG
+Wednesday PR(L) PR PR PE
+Thursday GA GA(L) DM(L) GA(ADD)
+Friday MA(L) MA EN PE
+Saturday PR(L)
