@@ -57,7 +57,7 @@ BOOL InitApplication(HINSTANCE hinstance)
 		return FALSE;
 	}
 	return TRUE;
-} 
+}
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	static int x, y;
@@ -86,19 +86,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 		// Drawing ellipse 
 		Ellipse(hdc, 0, 0, x / 2, y / 2 - 0.1*y);
 
-		HFONT hfont; hfont =  (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+		HFONT hfont; hfont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
 		LOGFONT logfont;
 		GetObject(hfont, sizeof(LOGFONT), &logfont);
 		logfont.lfHeight = 0.05*y;
 		HFONT newFont; newFont = CreateFontIndirect(&logfont);
-		HFONT oldFont; oldFont =  (HFONT)SelectObject(hdc, newFont);
+		HFONT oldFont; oldFont = (HFONT)SelectObject(hdc, newFont);
 
-		TextOut(hdc, x / 4.5, y / 2 - 0.1*y, "Ellipse", 8);
+		RECT textout; textout.left = 0; textout.top = y / 2 - 0.1*y; textout.right = x / 2; textout.bottom = y / 2;
+		DrawText(hdc, "Ellipse", 8, &textout, DT_CENTER | DT_VCENTER);
+
 		// Drawing rectangle
 		hpen = CreatePen(PS_ALTERNATE, 3, RGB(50, 210, 200));
 		SelectObject(hdc, hpen);
-		Rectangle(hdc, x / 2 + x*0.02, 0 + y*0.06, x - x*0.02, y / 2 - y*0.06); // использовать единичную окружность!!!!!!!
-		TextOut(hdc, x*0.75, y / 2 - y*0.05, "Rectangle", 9);
+		Rectangle(hdc, x / 2 + 0.02*x, 0, x - 0.02*x, y / 2 - y*0.1);
+		textout.left = x / 2; textout.top = y / 2 - 0.05*y; textout.right = x; textout.bottom = y / 2;
+		DrawText(hdc, "Rectangle", 9, &textout,DT_CENTER |  DT_BOTTOM);
 		SelectObject(hdc, lastPen);
 		DeleteObject(hpen);
 		// Pie
@@ -115,10 +118,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 		y0 = y / 2 + R;
 		x1 = 2 * R;
 		y1 = y / 2 + R;
-		x2 = x0 + R*cos(3.14 / 2);
-		y2 = y0 - R*sin(3.14 / 2);
+		x2 = x0 + R*cos(3.14 / 6);
+		y2 = y0 - R*sin(3.14 / 6);
 		Pie(hdc, 0, y / 2, 2 * R, y / 2 + 2 * R, x1, y1, x2, y2);
-		TextOut(hdc, x*0.2, y - 0.05*y, "Sector", 6);
+		textout.left = 0; textout.top = y - 0.05*y; textout.right = x/2; textout.bottom = y;
+		DrawText(hdc, "Sector", 6, &textout, DT_CENTER | DT_BOTTOM);
+		
 		SelectObject(hdc, lastBrush);
 		DeleteObject(brush);
 
@@ -128,7 +133,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 		points[1].x = x - 0.03*x; points[1].y = y * 0.75;
 		points[2].x = x *0.75; points[2].y = y - 0.05*y;
 		points[3].x = x / 2 + 0.03*x; points[3].y = y*0.75;
-		TextOut(hdc, 0.75*x, y - 0.05*y, "Rhomb", 5);
+
+		textout.left = x/2; textout.top = y - 0.05*y; textout.right = x; textout.bottom = y;
+		DrawText(hdc, "Rhomb", 5, &textout, DT_CENTER | DT_BOTTOM);
 
 		SelectObject(hdc, oldFont);
 		DeleteObject(oldFont);
@@ -168,4 +175,4 @@ BOOL InitInstance(HINSTANCE hinstance, int nCmdShow)
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
 	return TRUE;
-} 
+}

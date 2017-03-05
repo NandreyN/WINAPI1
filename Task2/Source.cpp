@@ -74,10 +74,10 @@ BOOL InitInstance(HINSTANCE hinstance, int nCMdShow)
 		"Rectangles",
 		"Rectangles",
 		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
 		0,
-		CW_USEDEFAULT,
 		0,
+		700,
+		700,
 		NULL,
 		NULL,
 		hinstance,
@@ -104,15 +104,15 @@ void Paint(HWND hwnd, int x, int y)
 	GetClientRect(hwnd, &rect);
 	HBRUSH brush;
 	int count, cx, cy, clStep1, clStep2, clStep3;
-	count = 20;
+	count = 200;
 	cx = x / count;
 	cy = y / count;
 	
 
 	/* generate secret number between 1 and 10: */
-	int r0 = rand() % 255 + 1;
-	int g0 = rand() % 255 + 1;
-	int b0 = rand() % 255 + 1;
+	int r0 = rand() % 90 + 1;
+	int g0 = rand() % 90 + 1;
+	int b0 = rand() % 90 + 1;
 
 	clStep1 = (255 - r0) / count;
 	clStep2 = (255 - g0) / count;
