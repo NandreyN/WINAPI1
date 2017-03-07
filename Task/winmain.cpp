@@ -101,29 +101,36 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 		SelectObject(hdc, hpen);
 		Rectangle(hdc, x / 2 + 0.02*x, 0, x - 0.02*x, y / 2 - y*0.1);
 		textout.left = x / 2; textout.top = y / 2 - 0.05*y; textout.right = x; textout.bottom = y / 2;
-		DrawText(hdc, "Rectangle", 9, &textout,DT_CENTER |  DT_BOTTOM);
+		DrawText(hdc, "Rectangle", 9, &textout, DT_CENTER | DT_BOTTOM);
 		SelectObject(hdc, lastPen);
 		DeleteObject(hpen);
 		// Pie
 
 		HBRUSH brush; brush = CreateSolidBrush(RGB(10, 10, 150));
 		lastBrush = SelectObject(hdc, brush);
-		int x0, y0, x1, y1, x2, y2, R;
+		int x0, y0, x1, y1, x2, y2, x3, y3, x4, y4, R;
 		if (y <= x)
-			R = y / 2 / 2;
+		{
+			R = y / 4;
+			x1 = ((x / 2 - y / 2) / 2); y1 = y / 2;
+			x2 = x / 2 - x1; y2 = y;
+		}
 		else
-			R = x / 2 / 2;
+		{
+			R = x / 4;
+			x1 = 0; y1 = y / 2 + ((y / 2 - x / 2) / 2);
+			x2 = x / 2; y2 = y - ((y / 2 - x / 2) / 2);
+		}
 
-		x0 = R;
-		y0 = y / 2 + R;
-		x1 = 2 * R;
-		y1 = y / 2 + R;
-		x2 = x0 + R*cos(3.14 / 6);
-		y2 = y0 - R*sin(3.14 / 6);
-		Pie(hdc, 0, y / 2, 2 * R, y / 2 + 2 * R, x1, y1, x2, y2);
-		textout.left = 0; textout.top = y - 0.05*y; textout.right = x/2; textout.bottom = y;
+		x0 = x / 4; y0 = y*0.75;
+		x3 = x0 + R; y3 = y0;
+		x4 = x0 + R * cos(3.14 / 2);
+		y4 = y0 - R * sin(3.14 / 2);
+		Pie(hdc, x1, y1, x2, y2, x3, y3, x4, y4);
+
+		textout.left = 0; textout.top = y - 0.05*y; textout.right = x / 2; textout.bottom = y;
 		DrawText(hdc, "Sector", 6, &textout, DT_CENTER | DT_BOTTOM);
-		
+
 		SelectObject(hdc, lastBrush);
 		DeleteObject(brush);
 
@@ -134,7 +141,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 		points[2].x = x *0.75; points[2].y = y - 0.05*y;
 		points[3].x = x / 2 + 0.03*x; points[3].y = y*0.75;
 
-		textout.left = x/2; textout.top = y - 0.05*y; textout.right = x; textout.bottom = y;
+		textout.left = x / 2; textout.top = y - 0.05*y; textout.right = x; textout.bottom = y;
 		DrawText(hdc, "Rhomb", 5, &textout, DT_CENTER | DT_BOTTOM);
 
 		SelectObject(hdc, oldFont);
