@@ -1,7 +1,6 @@
 #include <windows.h>
 #include <ctime>
 
-
 BOOL InitApplication(HINSTANCE hinstance);
 BOOL InitInstance(HINSTANCE hinstance, int nCMdShow);
 LRESULT CALLBACK WndProc(HWND hwnd, UINT messagem, WPARAM wparam, LPARAM lparam);

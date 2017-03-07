@@ -7,6 +7,11 @@ using namespace std;
 BOOL InitApplication(HINSTANCE hinstance);
 BOOL InitInstance(HINSTANCE hinstance, int nCmdShow);
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+void DrawEllipse(HDC& hdc, int x, int y);
+void DrawRectangle(HDC& hdc, int x, int y);
+void DrawSector(HDC& hdc, int x, int y);
+void DrawRhombus(HDC& hdc, int x, int y);
+
 static char appName[] = "Lab4";
 static char title[] = "Title";
 
@@ -74,79 +79,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 
 	case WM_PAINT:
 		hdc = BeginPaint(hwnd, &ps);
-		HGDIOBJ lastPen, lastBrush;
-		MoveToEx(hdc, 0, y / 2, NULL);
-		LineTo(hdc, x, y / 2);
-		MoveToEx(hdc, x / 2, 0, NULL);
-		LineTo(hdc, x / 2, y);
-		HPEN hpen; hpen = CreatePen(PS_DASHDOTDOT, 2, RGB(122, 0, 0));
-		lastPen = SelectObject(hdc, hpen);
-
-		// OR GetStockIbject(DC_PEN), seydccolor ...
-		// Drawing ellipse 
-		Ellipse(hdc, 0, 0, x / 2, y / 2 - 0.1*y);
-
-		HFONT hfont; hfont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
-		LOGFONT logfont;
-		GetObject(hfont, sizeof(LOGFONT), &logfont);
-		logfont.lfHeight = 0.05*y;
-		HFONT newFont; newFont = CreateFontIndirect(&logfont);
-		HFONT oldFont; oldFont = (HFONT)SelectObject(hdc, newFont);
-
-		RECT textout; textout.left = 0; textout.top = y / 2 - 0.1*y; textout.right = x / 2; textout.bottom = y / 2;
-		DrawText(hdc, "Ellipse", 8, &textout, DT_CENTER | DT_VCENTER);
+		DrawEllipse(hdc, x, y);
 
 		// Drawing rectangle
-		hpen = CreatePen(PS_ALTERNATE, 3, RGB(50, 210, 200));
-		SelectObject(hdc, hpen);
-		Rectangle(hdc, x / 2 + 0.02*x, 0, x - 0.02*x, y / 2 - y*0.1);
-		textout.left = x / 2; textout.top = y / 2 - 0.05*y; textout.right = x; textout.bottom = y / 2;
-		DrawText(hdc, "Rectangle", 9, &textout, DT_CENTER | DT_BOTTOM);
-		SelectObject(hdc, lastPen);
-		DeleteObject(hpen);
+		DrawRectangle(hdc, x, y);
 		// Pie
-
-		HBRUSH brush; brush = CreateSolidBrush(RGB(10, 10, 150));
-		lastBrush = SelectObject(hdc, brush);
-		int x0, y0, x1, y1, x2, y2, x3, y3, x4, y4, R;
-		if (y <= x)
-		{
-			R = y / 4;
-			x1 = ((x / 2 - y / 2) / 2); y1 = y / 2;
-			x2 = x / 2 - x1; y2 = y;
-		}
-		else
-		{
-			R = x / 4;
-			x1 = 0; y1 = y / 2 + ((y / 2 - x / 2) / 2);
-			x2 = x / 2; y2 = y - ((y / 2 - x / 2) / 2);
-		}
-
-		x0 = x / 4; y0 = y*0.75;
-		x3 = x0 + R; y3 = y0;
-		x4 = x0 + R * cos(3.14 / 2);
-		y4 = y0 - R * sin(3.14 / 2);
-		Pie(hdc, x1, y1, x2, y2, x3, y3, x4, y4);
-
-		textout.left = 0; textout.top = y - 0.05*y; textout.right = x / 2; textout.bottom = y;
-		DrawText(hdc, "Sector", 6, &textout, DT_CENTER | DT_BOTTOM);
-
-		SelectObject(hdc, lastBrush);
-		DeleteObject(brush);
-
+		DrawSector(hdc, x, y);
+		
+		DrawRhombus(hdc, x, y);
 		// Rhomb
-		POINT points[4];
-		points[0].x = x * 0.75; points[0].y = y / 2 + 0.05*y;
-		points[1].x = x - 0.03*x; points[1].y = y * 0.75;
-		points[2].x = x *0.75; points[2].y = y - 0.05*y;
-		points[3].x = x / 2 + 0.03*x; points[3].y = y*0.75;
-
-		textout.left = x / 2; textout.top = y - 0.05*y; textout.right = x; textout.bottom = y;
-		DrawText(hdc, "Rhomb", 5, &textout, DT_CENTER | DT_BOTTOM);
-
-		SelectObject(hdc, oldFont);
-		DeleteObject(oldFont);
-		Polygon(hdc, points, 4);
+		
 		EndPaint(hwnd, &ps);
 		break;
 	case WM_CLOSE:
@@ -160,6 +102,90 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 	}
 	return FALSE;
 }
+
+void DrawEllipse(HDC& hdc, int x, int y)
+{	
+	MoveToEx(hdc, 0, y / 2, NULL);
+	LineTo(hdc, x, y / 2);
+	MoveToEx(hdc, x / 2, 0, NULL);
+	LineTo(hdc, x / 2, y);
+	HPEN hpen, lastPen; hpen = CreatePen(PS_DASHDOTDOT, 2, RGB(122, 0, 0));
+	lastPen = (HPEN)SelectObject(hdc, hpen);
+
+	// OR GetStockIbject(DC_PEN), seydccolor ...
+	// Drawing ellipse 
+	Ellipse(hdc, 0, 0, x / 2, y / 2 - 0.1*y);
+
+	RECT textout;
+	textout.left = 0; textout.top = y / 2 - 0.1*y; textout.right = x / 2; textout.bottom = y / 2;
+	DrawText(hdc, "Ellipse", 8, &textout, DT_CENTER | DT_VCENTER);
+
+	SelectObject(hdc, lastPen);
+	DeleteObject(hpen);
+}
+
+void DrawRectangle(HDC& hdc, int x, int y)
+{
+	HPEN hpen, lastPen;
+	RECT textout;
+
+	hpen = CreatePen(PS_ALTERNATE, 3, RGB(50, 210, 200));
+	lastPen = (HPEN)SelectObject(hdc, hpen);
+	Rectangle(hdc, x / 2 + 0.02*x, 0, x - 0.02*x, y / 2 - y*0.1);
+	textout.left = x / 2; textout.top = y / 2 - 0.05*y; textout.right = x; textout.bottom = y / 2;
+	DrawText(hdc, "Rectangle", 9, &textout, DT_CENTER | DT_BOTTOM);
+	SelectObject(hdc, lastPen);
+	DeleteObject(hpen);
+}
+
+void DrawSector(HDC& hdc, int x, int y)
+{
+	RECT textout;
+
+	HBRUSH brush, lastBrush; brush = CreateSolidBrush(RGB(10, 10, 150));
+	lastBrush = (HBRUSH)SelectObject(hdc, brush);
+	int x0, y0, x1, y1, x2, y2, x3, y3, x4, y4, R;
+	if (y <= x)
+	{
+		R = y / 4;
+		x1 = ((x / 2 - y / 2) / 2); y1 = y / 2;
+		x2 = x / 2 - x1; y2 = y;
+	}
+	else
+	{
+		R = x / 4;
+		x1 = 0; y1 = y / 2 + ((y / 2 - x / 2) / 2);
+		x2 = x / 2; y2 = y - ((y / 2 - x / 2) / 2);
+	}
+
+	x0 = x / 4; y0 = y*0.75;
+	x3 = x0 + R; y3 = y0;
+	x4 = x0 + R * cos(3.14 / 6);
+	y4 = y0 - R * sin(3.14 / 6);
+	Pie(hdc, x1, y1, x2, y2, x3, y3, x4, y4);
+
+	textout.left = 0; textout.top = y - 0.05*y; textout.right = x / 2; textout.bottom = y;
+	DrawText(hdc, "Sector", 6, &textout, DT_CENTER | DT_BOTTOM);
+
+	SelectObject(hdc, lastBrush);
+	DeleteObject(brush);
+}
+
+void DrawRhombus(HDC& hdc, int x, int y)
+{
+	RECT textout;
+	POINT points[4];
+	points[0].x = x * 0.75; points[0].y = y / 2 + 0.05*y;
+	points[1].x = x - 0.03*x; points[1].y = y * 0.75;
+	points[2].x = x *0.75; points[2].y = y - 0.05*y;
+	points[3].x = x / 2 + 0.03*x; points[3].y = y*0.75;
+
+	textout.left = x / 2; textout.top = y - 0.05*y; textout.right = x; textout.bottom = y;
+	DrawText(hdc, "Rhomb", 5, &textout, DT_CENTER | DT_BOTTOM);
+
+	Polygon(hdc, points, 4);
+}
+
 BOOL InitInstance(HINSTANCE hinstance, int nCmdShow)
 {
 	HWND hwnd;
