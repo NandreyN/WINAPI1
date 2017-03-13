@@ -72,7 +72,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 
 		for (int y1 = 0, i = 0; i < week.size(); y1 += y / week.size(), i++)
 		{
-			r.left = 0; // Дебилизм
+			r.left = 0; 
 			r.top = y1;
 			r.right = x;
 			r.bottom = y1 + y / week.size();
@@ -156,7 +156,7 @@ void DrawDay(HDC& hdc, Day& day, POINT p1, POINT p2)
 	turnedTextLF.lfPitchAndFamily = DEFAULT_PITCH;
 	strcpy(turnedTextLF.lfFaceName, "Arial");
 	turnedTextLF.lfHeight = (6 * (p2.y - p1.y) < p2.x - p1.x) ? (p2.y - p1.y) / 4 : (p2.x - p1.x) / 28;
-	turnedTextLF.lfWidth = turnedTextLF.lfHeight *0.4;
+	turnedTextLF.lfWidth = turnedTextLF.lfHeight *0.3;
 	turnedTextLF.lfEscapement = 450;
 	turnedTextLF.lfItalic = FALSE;
 	turnedTextLF.lfUnderline = FALSE;
@@ -184,17 +184,24 @@ void DrawDay(HDC& hdc, Day& day, POINT p1, POINT p2)
 
 	SelectObject(hdc, oldFont);
 	DeleteObject(hTurnedText);
-	for (int i = p1.x + delta, j = 0; i <= p2.x - p1.x; i += xHorizontalCellLen, j++)
+	for (int i = p1.x + delta, j = 0; i <= p2.x; i += xHorizontalCellLen, j++)
 	{
 		RECT r;
 		r.left = i;
 		r.top = p1.y;
 		r.right = i + xHorizontalCellLen;
 		r.bottom = p2.y;
-		FillRect(hdc, &r, CreateSolidBrush(RGB(180, 180, 180)));
+		FillRect(hdc, &r, CreateSolidBrush(RGB(200, 200, 200)));
+		/*SelectObject(hdc, CreatePen(PS_DOT, 3, RGB(255, 0, 0)));
+		Rectangle(hdc, r.left, r.top, r.right, r.bottom);*/
 		if (j < day.classes.size())
 		{
-			DrawText(hdc, day.classes[j].c_str(), strlen(day.classes[j].c_str()), &r, DT_CENTER |DT_INTERNAL | DT_VCENTER | DT_SINGLELINE);
+			HBRUSH newB;
+			newB = CreateSolidBrush(RGB(200, 200, rand() % 255));
+			
+			FillRect(hdc, &r, newB);
+			DrawText(hdc, day.classes[j].c_str(), strlen(day.classes[j].c_str()), &r, DT_CENTER);
+			DeleteObject(newB);
 		}
 	}
 	for (int i = p1.x + delta; i <= p2.x - p1.x; i += xHorizontalCellLen)
